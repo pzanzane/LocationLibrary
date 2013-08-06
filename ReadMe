@@ -1,0 +1,4 @@
+While Using this library,
+Make sure you declaire Receivers in your Project.
+ 1. LocationReceived 
+ 
