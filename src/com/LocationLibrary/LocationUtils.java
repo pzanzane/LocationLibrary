@@ -12,8 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.LocationLibrary.db.DbConfiguration;
-import com.LocationLibrary.db.LocationsDbHelper;
 import com.LocationLibrary.db.DbModel;
+import com.LocationLibrary.db.LocationsDbHelper;
 import com.LocationLibrary.db.dao.LocationsDao;
 import com.LocationLibrary.db.model.LocationsModel;
 import com.LocationLibrary.locations.receiver.LocationReceived;
