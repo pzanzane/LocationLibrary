@@ -41,7 +41,7 @@ public final class ClearLocationsTable{
 		@Override
 		public void run() {
 			
-			SQLiteDatabase sq = DbHelper.getInstance(context, config).getSQLiteDatabase();
+			SQLiteDatabase sq = DbHelper.getInstance().getSQLiteDatabase();
 			
 			sq.delete(DatabaseConstants.LOCATIONS_DATABASE_NAME, null, null);
 			

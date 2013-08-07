@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.LocationLibrary.db.DbConfig;
 import com.LocationLibrary.db.DbHelper;
+import com.LocationLibrary.db.IDbConfiguration;
 import com.LocationLibrary.db.dao.LocationsDao;
 import com.LocationLibrary.db.model.LocationsModel;
 import com.LocationLibrary.helpers.ClearLocationsTable;
@@ -40,8 +41,8 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 		  
 		return utils;
 	}
-	public static void initializeLocations(Context context,DbConfig config){
- 		DbHelper.getInstance(context, config);
+	public static void initializeLocations(Context context,IDbConfiguration config){
+ 		DbHelper.instanciateDatabase(context, config);
 	}
 	
 	public void startFetchingLocations(Context context,int intervalInSeconds,int priority,int minDisplacementInMeters){
@@ -112,7 +113,7 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 	public LocationsModel getLatestLocation(int invalidateTimeInSeconds){
 		
 		LocationsDao dao = new LocationsDao(context,
-				DbHelper.getInstance(context,DbConfig.getInstance())
+				DbHelper.getInstance()
 													.getSQLiteDatabase());
 		
 		
@@ -121,7 +122,7 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 						+" IN ("+"SELECT MAX("+LocationsDao.TIMESTAMP+") FROM "+LocationsDao.TABLE_NAME+")"
 						+" AND "+LocationsDao.TIMESTAMP+">"+(System.currentTimeMillis() - (invalidateTimeInSeconds * 1000));
 		
-		SQLiteDatabase sq = DbHelper.getInstance(context,DbConfig.getInstance()).getSQLiteDatabase();
+		SQLiteDatabase sq = DbHelper.getInstance().getSQLiteDatabase();
 		Cursor c = sq.rawQuery(query, null);
 		
 		if (c.moveToFirst()) {

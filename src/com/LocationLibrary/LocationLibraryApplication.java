@@ -1,5 +1,7 @@
 package com.LocationLibrary;
 
+import com.LocationLibrary.db.DbConfig;
+
 import android.app.Application;
 
 public abstract class LocationLibraryApplication extends Application {
@@ -8,6 +10,7 @@ public abstract class LocationLibraryApplication extends Application {
 	public void onCreate() { 
 		super.onCreate();
 		
-		LocationUtils.initializeLocations(getApplicationContext(),null);
+		LocationUtils.initializeLocations(getApplicationContext(),
+				DbConfig.getInstance());
 	}
 }

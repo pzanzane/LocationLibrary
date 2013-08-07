@@ -16,4 +16,11 @@ public interface IDbConfiguration{
   
 	int getDatabaseVersion();
 	
+	void setDatabaseName(String databaseName);
+	  
+	void setDatabasePath(String databasePath);
+  
+	void setModels(List<DbModel> models);
+  
+	void setDatabaseVersion(int version);
 }

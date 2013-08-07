@@ -38,11 +38,34 @@ public class DbConfig implements IDbConfiguration {
 	public static IDbConfiguration getInstance() {
 		
 		DbConfig config = new DbConfig();
-		config.databaseName=DatabaseConstants.LOCATIONS_DATABASE_NAME;
-		config.databasePath=DatabaseConstants.LOCATIONS_DATABASE_PATH;
-		config.databaseVersion=DatabaseConstants.LOCATIONS_DATABASE_VERSION;
-		config.models=DatabaseConstants.createModels();
+		config.setDatabaseName(DatabaseConstants.LOCATIONS_DATABASE_NAME);
+		config.setDatabasePath(DatabaseConstants.LOCATIONS_DATABASE_PATH);
+		config.setDatabaseVersion(DatabaseConstants.LOCATIONS_DATABASE_VERSION);
+		config.setModels(DatabaseConstants.createModels());
 		return config;
+	}
+
+	@Override
+	public void setDatabaseName(String databaseName) {
+		this.databaseName=databaseName;		
+	}
+
+	@Override
+	public void setDatabasePath(String databasePath) {
+		this.databasePath=databasePath;
+		
+	}
+
+	@Override
+	public void setModels(List<DbModel> models) {
+		this.models=models;
+		
+	}
+
+	@Override
+	public void setDatabaseVersion(int version) {
+		databaseVersion=version;
+		
 	} 
 
 }
