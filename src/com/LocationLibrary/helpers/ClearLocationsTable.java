@@ -1,19 +1,21 @@
 package com.LocationLibrary.helpers;
 
-import android.content.Context; 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.LocationLibrary.Constants;
-import com.LocationLibrary.db.LocationsDbHelper;
+import com.LocationLibrary.DatabaseConstants;
+import com.LocationLibrary.db.DbHelper;
+import com.LocationLibrary.db.IDbConfiguration;
 
 
 public final class ClearLocationsTable{
 	
 	Context context;
+	IDbConfiguration config;
 	
-	
-	public ClearLocationsTable(Context context){
+	public ClearLocationsTable(Context context,IDbConfiguration config){
 		this.context = context;
+		this.config=config;
 	}
 	public void clear(){
 		
@@ -26,17 +28,22 @@ public final class ClearLocationsTable{
 	static class RunnableClearTables implements Runnable{
 
 		Context context;
+		IDbConfiguration config;
 		
 		public RunnableClearTables(Context context) {
 			this.context = context;
+		}
+		
+		public void setConfig(IDbConfiguration config) {
+			this.config = config;
 		}
 
 		@Override
 		public void run() {
 			
-			SQLiteDatabase sq = LocationsDbHelper.getInstance(context, Constants.LOCATIONS_DATABASE_NAME).getSQLiteDatabase();
+			SQLiteDatabase sq = DbHelper.getInstance(context, config).getSQLiteDatabase();
 			
-			sq.delete(Constants.LOCATIONS_DATABASE_NAME, null, null);
+			sq.delete(DatabaseConstants.LOCATIONS_DATABASE_NAME, null, null);
 			
 		}
 		

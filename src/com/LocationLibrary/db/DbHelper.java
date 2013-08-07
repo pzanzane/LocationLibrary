@@ -18,21 +18,25 @@ import android.util.Log;
  * @author Rishi K
  * 
  */
-public class LocationsDbHelper {
-	private String DATABASE_NAME;
-	private final static int DATABASE_VERSION = 1;
-	private static List<DbModel> models;
+public class DbHelper {
+	public String databaseName;
+	private int databaseVersion;
+	private List<DbModel> models;
 	private Context context;
 	private SQLiteDatabase db;
 	private SQLiteStatement insertStmt;
 	private static OpenHelper openHelper;
-	private static String databasePath = null;
+	private String databasePath = null;
 
-	private static LocationsDbHelper dbHelper = null;
+	private static DbHelper dbHelper = null;
 
-	private LocationsDbHelper(Context context,String databaseName) {
+	private DbHelper(Context context,String dbPath,String dbName,int dbVersion,List<DbModel>models) {
 		this.context = context;
-		openHelper = new OpenHelper(this.context,databaseName);
+		this.databasePath=dbPath;
+		this.databaseName=dbName;
+		this.databaseVersion=dbVersion;
+		
+		openHelper = new OpenHelper(this.context);
 		openHelper.close();
 		if (db != null && db.isOpen()) {
 			db.close();
@@ -41,7 +45,7 @@ public class LocationsDbHelper {
 		if (databasePath == null) {
 			db = openHelper.getWritableDatabase();
 		} else {
-			db = SQLiteDatabase.openDatabase(databasePath + DATABASE_NAME,
+			db = SQLiteDatabase.openDatabase(databasePath + databaseName,
 					null, SQLiteDatabase.OPEN_READWRITE);
 		}
 		// Enable foreign key constraints
@@ -49,36 +53,32 @@ public class LocationsDbHelper {
 
 	}
 
-	public static LocationsDbHelper getInstance(Context context,String databaseName) {
-		if (dbHelper == null) {
-			dbHelper = new LocationsDbHelper(context,databaseName);
-		}
-
-		return dbHelper;
-	}
-
-	public static LocationsDbHelper getInstance(Context context,
-			DbConfiguration dbConfiguration) {
-		
-		if (dbHelper == null) {
-			instanciateDb(context, dbConfiguration);
-		} else if (!(new File(dbConfiguration.getDatabasePath() == null ? context
-				.getDatabasePath(dbConfiguration.getDatabaseName()).getAbsolutePath() : (dbConfiguration
-				.getDatabasePath()
-				+ File.separator
-				+ dbConfiguration.getDatabaseName())).exists())) {
-			instanciateDb(context, dbConfiguration);
-		}
+	public static DbHelper getInstance(Context context,
+			IDbConfiguration dbConfiguration) {
+		if ((!isDatabaseExists(context, dbConfiguration.getDatabasePath(), dbConfiguration.getDatabaseName())) || dbHelper == null) {
+			
+			dbHelper = null;
+			dbHelper = new DbHelper(context, dbConfiguration.getDatabasePath(),
+					dbConfiguration.getDatabaseName(), dbConfiguration.getDatabaseVersion(),
+					dbConfiguration.getModels());
+ 		}  
 
 		return dbHelper;
 	}
 	
-	public static void instanciateDb(Context context,
-			DbConfiguration dbConfiguration){
-		models = dbConfiguration.getModels();
-		databasePath = dbConfiguration.getDatabasePath();
-		dbHelper = new LocationsDbHelper(context,dbConfiguration.getDatabaseName());
+	private static boolean isDatabaseExists(Context context,String databasePath,String databsaseName){
+		
+		File f = new File((databasePath == null || context
+				.getDatabasePath(databsaseName).getAbsolutePath()
+				.equalsIgnoreCase(databasePath)) ? context.getDatabasePath(
+				databasePath).getAbsolutePath() : (databasePath
+				+ File.separator + databsaseName));
+
+		boolean bool = f.exists();
+		f = null;
+		return bool;
 	}
+	
 	/*
 	 * public DbHelper(Context mContext,List<DbModel> models) { this.context =
 	 * mContext; this.models = models; openHelper = new
@@ -280,7 +280,6 @@ public class LocationsDbHelper {
 			c = db.rawQuery("select * from " + table, null);
 			return c.moveToFirst();
 		} catch (Exception e) {
-			// throw new DAOException(e);
 			return false;
 		} finally {
 			if (c != null) {
@@ -301,11 +300,9 @@ public class LocationsDbHelper {
 	private class OpenHelper extends SQLiteOpenHelper {
 
 		private static final String TAG = "OpenHelper";
-		private String sql;
-		private String databaseName;
-		OpenHelper(Context context,String databaseName) {
-			super(context, databaseName, null, DATABASE_VERSION);
-			this.databaseName = databaseName;
+
+		OpenHelper(Context context) {
+			super(context, databaseName, null, databaseVersion);
 		}
 
 		@Override

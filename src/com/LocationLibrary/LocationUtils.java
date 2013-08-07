@@ -1,8 +1,5 @@
 package com.LocationLibrary;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.LocationLibrary.db.DbConfiguration;
-import com.LocationLibrary.db.DbModel;
-import com.LocationLibrary.db.LocationsDbHelper;
+import com.LocationLibrary.db.DbConfig;
+import com.LocationLibrary.db.DbHelper;
 import com.LocationLibrary.db.dao.LocationsDao;
 import com.LocationLibrary.db.model.LocationsModel;
+import com.LocationLibrary.helpers.ClearLocationsTable;
 import com.LocationLibrary.locations.receiver.LocationReceived;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -29,33 +26,22 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 	private long intervalInMillis;
 	private int priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
 	private int minDisplacementMeters=0;
-	private String databaseName=null;
-	
+ 	
 	private LocationClient client;
 	private Context context;
 	
-	private LocationUtils(String databaseName){
-		this.databaseName = databaseName;
+	private LocationUtils(){
 	}
 	
 	public static LocationUtils getInstance(){
 		
 		if(utils==null)
-			utils = new LocationUtils(Constants.LOCATIONS_DATABASE_NAME);
+			utils = new LocationUtils();
 		  
 		return utils;
 	}
-	public static void initializeLocations(Context context){
-		
-		List<DbModel> list = new ArrayList<DbModel>();
-		list.add(new LocationsModel());
-		
-		DbConfiguration.Builder builder = new DbConfiguration.Builder();
-		builder.setDatabaseName(Constants.LOCATIONS_DATABASE_NAME);
-		
-		builder.setModels(list);
-		
-		LocationsDbHelper.getInstance(context, builder.build());
+	public static void initializeLocations(Context context,DbConfig config){
+ 		DbHelper.getInstance(context, config);
 	}
 	
 	public void startFetchingLocations(Context context,int intervalInSeconds,int priority,int minDisplacementInMeters){
@@ -77,7 +63,10 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 	
 	public void clearLocationsTable(){
 		
+		ClearLocationsTable clearTable = new ClearLocationsTable(context, DbConfig.getInstance());
+		clearTable.clear();
 	}
+	
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) { 
 		
@@ -123,7 +112,7 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 	public LocationsModel getLatestLocation(int invalidateTimeInSeconds){
 		
 		LocationsDao dao = new LocationsDao(context,
-											LocationsDbHelper.getInstance(context,databaseName)
+				DbHelper.getInstance(context,DbConfig.getInstance())
 													.getSQLiteDatabase());
 		
 		
@@ -132,7 +121,7 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 						+" IN ("+"SELECT MAX("+LocationsDao.TIMESTAMP+") FROM "+LocationsDao.TABLE_NAME+")"
 						+" AND "+LocationsDao.TIMESTAMP+">"+(System.currentTimeMillis() - (invalidateTimeInSeconds * 1000));
 		
-		SQLiteDatabase sq = LocationsDbHelper.getInstance(context,databaseName).getSQLiteDatabase();
+		SQLiteDatabase sq = DbHelper.getInstance(context,DbConfig.getInstance()).getSQLiteDatabase();
 		Cursor c = sq.rawQuery(query, null);
 		
 		if (c.moveToFirst()) {

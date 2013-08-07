@@ -30,7 +30,7 @@ public class DemoActivity extends Activity implements OnClickListener{
 		button.setOnClickListener(this);
 		
 		utils = LocationUtils.getInstance();
-		LocationUtils.initializeLocations(getApplicationContext());
+		LocationUtils.initializeLocations(getApplicationContext(),null);
 		utils.startFetchingLocations(	getApplicationContext(),
 		                             	intervalToFetchLocation,
 										LocationRequest.PRIORITY_HIGH_ACCURACY,

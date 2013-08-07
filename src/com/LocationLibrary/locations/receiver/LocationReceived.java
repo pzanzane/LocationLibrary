@@ -3,13 +3,12 @@ package com.LocationLibrary.locations.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.util.Log;
 
-import com.LocationLibrary.Constants;
-import com.LocationLibrary.db.LocationsDbHelper;
+import com.LocationLibrary.db.DbConfig;
+import com.LocationLibrary.db.DbHelper;
 import com.LocationLibrary.db.dao.LocationsDao;
 import com.LocationLibrary.db.model.LocationsModel;
 import com.google.android.gms.location.LocationClient;
@@ -70,8 +69,8 @@ public class LocationReceived extends BroadcastReceiver {
 
 			synchronized (entry) {
 				
-				SQLiteDatabase sq = LocationsDbHelper
-						.getInstance(context,Constants.LOCATIONS_DATABASE_NAME).getSQLiteDatabase();
+				SQLiteDatabase sq = DbHelper
+						.getInstance(context,DbConfig.getInstance()).getSQLiteDatabase();
 				
 				LocationsDao dao = new LocationsDao(context, sq);
 				
