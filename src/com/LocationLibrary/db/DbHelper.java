@@ -53,7 +53,10 @@ public class DbHelper {
 
 	}
 
-	public static DbHelper getInstance(){
+	public static DbHelper getInstance(Context context,IDbConfiguration dbConfiguration){
+		if(dbHelper==null){
+			instanciateDatabase(context, dbConfiguration);
+		}
 		return dbHelper;
 	}
 	

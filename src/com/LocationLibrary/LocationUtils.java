@@ -113,7 +113,7 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 	public LocationsModel getLatestLocation(int invalidateTimeInSeconds){
 		
 		LocationsDao dao = new LocationsDao(context,
-				DbHelper.getInstance()
+				DbHelper.getInstance(context,DbConfig.getInstance())
 													.getSQLiteDatabase());
 		
 		
@@ -122,7 +122,7 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 						+" IN ("+"SELECT MAX("+LocationsDao.TIMESTAMP+") FROM "+LocationsDao.TABLE_NAME+")"
 						+" AND "+LocationsDao.TIMESTAMP+">"+(System.currentTimeMillis() - (invalidateTimeInSeconds * 1000));
 		
-		SQLiteDatabase sq = DbHelper.getInstance().getSQLiteDatabase();
+		SQLiteDatabase sq = DbHelper.getInstance(context,DbConfig.getInstance()).getSQLiteDatabase();
 		Cursor c = sq.rawQuery(query, null);
 		
 		if (c.moveToFirst()) {

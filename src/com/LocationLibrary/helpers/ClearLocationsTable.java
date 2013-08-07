@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.LocationLibrary.DatabaseConstants;
+import com.LocationLibrary.db.DbConfig;
 import com.LocationLibrary.db.DbHelper;
 import com.LocationLibrary.db.IDbConfiguration;
+import com.google.android.gms.internal.dv;
 
 
 public final class ClearLocationsTable{
@@ -41,7 +43,7 @@ public final class ClearLocationsTable{
 		@Override
 		public void run() {
 			
-			SQLiteDatabase sq = DbHelper.getInstance().getSQLiteDatabase();
+			SQLiteDatabase sq = DbHelper.getInstance(context,config).getSQLiteDatabase();
 			
 			sq.delete(DatabaseConstants.LOCATIONS_DATABASE_NAME, null, null);
 			

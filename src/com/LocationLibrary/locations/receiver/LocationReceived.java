@@ -70,7 +70,7 @@ public class LocationReceived extends BroadcastReceiver {
 			synchronized (entry) {
 				
 				SQLiteDatabase sq = DbHelper
-						.getInstance().getSQLiteDatabase();
+						.getInstance(context,DbConfig.getInstance()).getSQLiteDatabase();
 				
 				LocationsDao dao = new LocationsDao(context, sq);
 				
