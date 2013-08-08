@@ -35,6 +35,7 @@ public class DbHelper {
 		this.databasePath=dbPath;
 		this.databaseName=dbName;
 		this.databaseVersion=dbVersion;
+		this.models = models;
 		
 		openHelper = new OpenHelper(this.context);
 		openHelper.close();
@@ -50,7 +51,9 @@ public class DbHelper {
 		}
 		// Enable foreign key constraints
 		db.execSQL("PRAGMA foreign_keys=ON;");
-
+		
+		Log.d("Node", "Databse Created");
+		
 	}
 
 	public static DbHelper getInstance(Context context,IDbConfiguration dbConfiguration){
@@ -77,10 +80,11 @@ public class DbHelper {
 	
 	private static boolean isDatabaseExists(Context context,String databasePath,String databsaseName){
 		
+ 
 		File f = new File((databasePath == null || context
 				.getDatabasePath(databsaseName).getAbsolutePath()
 				.equalsIgnoreCase(databasePath)) ? context.getDatabasePath(
-				databasePath).getAbsolutePath() : (databasePath
+				databsaseName).getAbsolutePath() : (databasePath
 				+ File.separator + databsaseName));
 
 		boolean bool = f.exists();

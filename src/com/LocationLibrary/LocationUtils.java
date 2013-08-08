@@ -58,8 +58,14 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 	}
 	
 	public void stopFetchingLocations(){
-		if(client!=null && client.isConnected())
+		
+		Log.d("Node", "client connected : "+client.isConnected());
+		
+		if(client!=null && client.isConnected()){
+			Log.d("Node", "client Disconnecting");
+			client.removeLocationUpdates(getPendingIntent(context));
 			client.disconnect();
+		}
 	}
 	
 	public void clearLocationsTable(){
@@ -70,7 +76,7 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 	
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) { 
-		
+		Log.d("Node", "Connetcion Failed");
 	}
 
 	@Override
@@ -87,11 +93,7 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 										getPendingIntent(context));
 		
 	}
-
-	@Override
-	public void onDisconnected() {
-		utils=null;
-	}
+ 
 	
 	private PendingIntent getPendingIntent(Context context) {
 
@@ -131,5 +133,12 @@ public class LocationUtils implements ConnectionCallbacks, OnConnectionFailedLis
 		}
 		
 		return null;
+	}
+
+	@Override
+	public void onDisconnected() {
+		
+		Log.d("Node", "Disconnected");
+		
 	}
 }

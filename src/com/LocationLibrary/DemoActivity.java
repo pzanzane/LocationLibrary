@@ -1,5 +1,6 @@
 package com.LocationLibrary;
 
+import com.LocationLibrary.db.DbConfig;
 import com.LocationLibrary.db.model.LocationsModel;
 import com.google.android.gms.location.LocationRequest;
 
@@ -30,7 +31,7 @@ public class DemoActivity extends Activity implements OnClickListener{
 		button.setOnClickListener(this);
 		
 		utils = LocationUtils.getInstance();
-		LocationUtils.initializeLocations(getApplicationContext(),null);
+		LocationUtils.initializeLocations(getApplicationContext(),DbConfig.getInstance());
 		utils.startFetchingLocations(	getApplicationContext(),
 		                             	intervalToFetchLocation,
 										LocationRequest.PRIORITY_HIGH_ACCURACY,
