@@ -54,7 +54,9 @@ public class DbHelper {
 	}
 
 	public static DbHelper getInstance(Context context,IDbConfiguration dbConfiguration){
-		if(dbHelper==null){
+		if ((!isDatabaseExists(	context,
+								dbConfiguration.getDatabasePath(),
+								dbConfiguration.getDatabaseName())) || dbHelper == null) {
 			instanciateDatabase(context, dbConfiguration);
 		}
 		return dbHelper;
