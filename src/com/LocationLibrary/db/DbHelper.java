@@ -37,17 +37,20 @@ public class DbHelper {
 		this.databaseVersion=dbVersion;
 		this.models = models;
 		
-		openHelper = new OpenHelper(this.context);
-		openHelper.close();
+		if(openHelper!=null)
+			openHelper.close();
+		
 		if (db != null && db.isOpen()) {
 			db.close();
-			openHelper.close();
 		}
 		if (databasePath == null) {
+			openHelper = new OpenHelper(this.context,databaseName);
 			db = openHelper.getWritableDatabase();
 		} else {
-			db = SQLiteDatabase.openDatabase(databasePath + databaseName,
-					null, SQLiteDatabase.OPEN_READWRITE);
+			openHelper = new OpenHelper(this.context,databasePath +File.separator+ databaseName);
+//			db = SQLiteDatabase.openOrCreateDatabase(databasePath +File.separator+ databaseName,
+//					null);
+			db=openHelper.getWritableDatabase();
 		}
 		// Enable foreign key constraints
 		db.execSQL("PRAGMA foreign_keys=ON;");
@@ -314,8 +317,8 @@ public class DbHelper {
 
 		private static final String TAG = "OpenHelper";
 
-		OpenHelper(Context context) {
-			super(context, databaseName, null, databaseVersion);
+		OpenHelper(Context context,String absoluteDatabasePath) {
+			super(context, absoluteDatabasePath, null, databaseVersion);
 		}
 
 		@Override

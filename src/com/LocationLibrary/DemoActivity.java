@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 public class DemoActivity extends Activity implements OnClickListener{
 
-	private LocationUtils utils;
+	private LocationClientUtils utils;
 	private Button button;
 	private TextView txtLattitude,txtLongitude;
 	private int invalideTimeInSeconds=180,intervalToFetchLocation=60;
@@ -30,8 +30,8 @@ public class DemoActivity extends Activity implements OnClickListener{
 		
 		button.setOnClickListener(this);
 		
-		utils = LocationUtils.getInstance();
-		LocationUtils.initializeLocations(getApplicationContext(),DbConfig.getInstance());
+		utils = LocationClientUtils.getInstance();
+		LocationClientUtils.initializeLocations(getApplicationContext(),DbConfig.getInstance());
 		utils.startFetchingLocations(	getApplicationContext(),
 		                             	intervalToFetchLocation,
 										LocationRequest.PRIORITY_HIGH_ACCURACY,
