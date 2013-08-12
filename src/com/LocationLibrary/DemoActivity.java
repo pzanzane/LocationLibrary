@@ -30,7 +30,7 @@ public class DemoActivity extends Activity implements OnClickListener{
 		
 		button.setOnClickListener(this);
 		
-		utils = LocationClientUtils.getInstance();
+		utils = LocationClientUtils.getInstance(getApplicationContext());
 		LocationClientUtils.initializeLocations(getApplicationContext(),DbConfig.getInstance());
 		utils.startFetchingLocations(	getApplicationContext(),
 		                             	intervalToFetchLocation,
@@ -43,13 +43,13 @@ public class DemoActivity extends Activity implements OnClickListener{
 		super.onDestroy();
 		
 		utils.stopFetchingLocations();
-		utils.clearLocationsTable();
+		utils.clearLocationsTable(getApplicationContext());
 	}
 
 	@Override
 	public void onClick(View v) { 
 		
-		LocationsModel model = utils.getLatestLocation(invalideTimeInSeconds);
+		LocationsModel model = utils.getLatestLocation(getApplicationContext(),invalideTimeInSeconds);
 		
 		if(model!=null){
 			txtLattitude.setText(model.getLattitude()+"");

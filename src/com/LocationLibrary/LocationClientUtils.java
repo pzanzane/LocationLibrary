@@ -28,16 +28,17 @@ public class LocationClientUtils implements ConnectionCallbacks, OnConnectionFai
 	private int priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
 	private int minDisplacementMeters=0;
  	
-	private LocationClient client;
-	private Context context;
+	private LocationClient client; 
+	private PendingIntent pedingIntent;
 	
-	private LocationClientUtils(){
+	private LocationClientUtils(Context context){
+		pedingIntent = getPendingIntent(context);
 	}
 	
-	public static LocationClientUtils getInstance(){
+	public static LocationClientUtils getInstance(Context context){
 		
 		if(utils==null)
-			utils = new LocationClientUtils();
+			utils = new LocationClientUtils(context);
 		  
 		return utils;
 	}
@@ -49,7 +50,6 @@ public class LocationClientUtils implements ConnectionCallbacks, OnConnectionFai
 		this.intervalInMillis=(intervalInSeconds*1000l);
 		this.priority=priority;
 		this.minDisplacementMeters=minDisplacementInMeters;
-		this.context=context;
 		
 		client = new LocationClient(context,
 									this,
@@ -63,12 +63,12 @@ public class LocationClientUtils implements ConnectionCallbacks, OnConnectionFai
 		
 		if(client!=null && client.isConnected()){
 			Log.d("Node", "client Disconnecting");
-			client.removeLocationUpdates(getPendingIntent(context));
+			client.removeLocationUpdates(pedingIntent);
 			client.disconnect();
 		}
 	}
 	
-	public void clearLocationsTable(){
+	public void clearLocationsTable(Context context){
 		
 		ClearLocationsTable clearTable = new ClearLocationsTable(context, DbConfig.getInstance());
 		clearTable.clear();
@@ -90,7 +90,7 @@ public class LocationClientUtils implements ConnectionCallbacks, OnConnectionFai
 		request.setSmallestDisplacement(minDisplacementMeters);
 
 		client.requestLocationUpdates(	request,
-										getPendingIntent(context));
+										pedingIntent);
 		
 	}
  
@@ -112,7 +112,7 @@ public class LocationClientUtils implements ConnectionCallbacks, OnConnectionFai
 	 * This parameter Should be greater than intervalInSeconds to be used effectively.
 	 * @return Latest valid LocationsModel
 	 */
-	public LocationsModel getLatestLocation(int invalidateTimeInSeconds){
+	public LocationsModel getLatestLocation(Context context,int invalidateTimeInSeconds){
 		
 		LocationsDao dao = new LocationsDao(context,
 				DbHelper.getInstance(context,DbConfig.getInstance())

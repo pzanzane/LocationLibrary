@@ -26,8 +26,7 @@ public class OldLocationUtils {
 	private int priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
 	private int minDisplacementMeters=0;
  	
-	private LocationClient client;
-	private Context context;
+	private LocationClient client; 
 	
 	private OldLocationUtils(){
 	}
@@ -46,9 +45,7 @@ public class OldLocationUtils {
 	public void startFetchingLocations(Context context,int intervalInSeconds,int priority,int minDisplacementInMeters){
 		this.intervalInMillis=(intervalInSeconds*1000l);
 		this.priority=priority;
-		this.minDisplacementMeters=minDisplacementInMeters;
-		this.context=context;
-		
+		this.minDisplacementMeters=minDisplacementInMeters;  
 		
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_HIGH);
@@ -62,7 +59,7 @@ public class OldLocationUtils {
 		
 	}
 	
-	public void stopFetchingLocations(){
+	public void stopFetchingLocations(Context context){
 		
 		Log.d("Node", "client connected : "+client.isConnected());
 		
@@ -71,7 +68,7 @@ public class OldLocationUtils {
 		 
 	}
 	
-	public void clearLocationsTable(){
+	public void clearLocationsTable(Context context){
 		
 		ClearLocationsTable clearTable = new ClearLocationsTable(context, DbConfig.getInstance());
 		clearTable.clear();
@@ -94,7 +91,7 @@ public class OldLocationUtils {
 	 * This parameter Should be greater than intervalInSeconds to be used effectively.
 	 * @return Latest valid LocationsModel
 	 */
-	public LocationsModel getLatestLocation(int invalidateTimeInSeconds){
+	public LocationsModel getLatestLocation(Context context,int invalidateTimeInSeconds){
 		
 		LocationsDao dao = new LocationsDao(context,
 				DbHelper.getInstance(context,DbConfig.getInstance())
