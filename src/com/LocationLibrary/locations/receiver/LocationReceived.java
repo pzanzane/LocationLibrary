@@ -44,13 +44,12 @@ public class LocationReceived extends BroadcastReceiver {
 	} 
 	static class RunnableLocationEntry implements Runnable {
 
-		private static RunnableLocationEntry entry;
+		private static Object entry = new Object();
 
 		public static RunnableLocationEntry getInstance() {
-			if (entry == null) {
-				entry = new RunnableLocationEntry();
-			}
-			return entry;
+			
+			return new RunnableLocationEntry();
+		 
 		}
 
 		LocationsModel model;
