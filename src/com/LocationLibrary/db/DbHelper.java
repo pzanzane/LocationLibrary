@@ -26,13 +26,13 @@ public class DbHelper {
 	private SQLiteDatabase db;
 	private SQLiteStatement insertStmt;
 	private static OpenHelper openHelper;
-	private String databasePath = null;
+	private String databaseDir = null;
 
 	private static DbHelper dbHelper = null;
 
-	private DbHelper(Context context,String dbPath,String dbName,int dbVersion,List<DbModel>models) {
+	private DbHelper(Context context,String databaseDir,String dbName,int dbVersion,List<DbModel>models) {
 		this.context = context;
-		this.databasePath=dbPath;
+		this.databaseDir=databaseDir;
 		this.databaseName=dbName;
 		this.databaseVersion=dbVersion;
 		this.models = models;
@@ -43,13 +43,11 @@ public class DbHelper {
 		if (db != null && db.isOpen()) {
 			db.close();
 		}
-		if (databasePath == null) {
-			openHelper = new OpenHelper(this.context,databaseName);
+		if (databaseDir == null) {
+			openHelper = new OpenHelper(context,databaseName);
 			db = openHelper.getWritableDatabase();
 		} else {
-			openHelper = new OpenHelper(this.context,databasePath +File.separator+ databaseName);
-//			db = SQLiteDatabase.openOrCreateDatabase(databasePath +File.separator+ databaseName,
-//					null);
+			openHelper = new OpenHelper(context,databaseDir +File.separator+ databaseName);
 			db=openHelper.getWritableDatabase();
 		}
 		// Enable foreign key constraints
