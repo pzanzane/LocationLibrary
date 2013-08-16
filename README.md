@@ -10,4 +10,4 @@ You need to add Permission and receiver in menifest file in your AndroidMenfest.
 <receiver
 android:name="com.LocationLibrary.locations.receiver.LocationReceived"
 android:exported="true" >
-</receiver>"
+</receiver>
