@@ -46,6 +46,25 @@ public class LocationClientUtils implements ConnectionCallbacks, OnConnectionFai
  		DbHelper.instanciateDatabase(context, config);
 	}
 	
+	/**
+	 * @param context
+	 * @param intervalInSeconds : Interval in which locations should fetched and stored in database
+	 * @param priority :
+	 *  	<p>1.LocationResult.PRIORITY_BALANCED_POWER_ACCURACY <br> 	
+	 *      Used with setPriority(int) to request "block" level accuracy.</p>
+	 *   
+	 *   <p>2.LocationResult.PRIORITY_HIGH_ACCURACY<br>
+	 *      Used with setPriority(int) to request the most accurate locations available.</p>
+	 *      
+	 *   <p>3.LocationResult.PRIORITY_LOW_POWER<br>
+	 *      Used with setPriority(int) to request "city" level accuracy.</p>
+	 *      
+	 *   <p>4.LocationResult.PRIORITY_NO_POWER<br>
+	 *       Used with setPriority(int) to request the best accuracy possible with zero additional power consumption.</p>
+	 *    
+	 * @param minDisplacementInMeters :
+	 *  Distance traveled after which location should be fetched
+	 */
 	public void startFetchingLocations(Context context,int intervalInSeconds,int priority,int minDisplacementInMeters){
 		this.intervalInMillis=(intervalInSeconds*1000l);
 		this.priority=priority;
@@ -55,8 +74,7 @@ public class LocationClientUtils implements ConnectionCallbacks, OnConnectionFai
 									this,
 									this);
 		client.connect();		
-	}
-	
+	} 
 	public void stopFetchingLocations(){
 		
 		Log.d("Node", "client connected : "+client.isConnected());
